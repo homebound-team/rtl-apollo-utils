@@ -6,7 +6,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf build; ./node_modules/.bin/tsc",
+    "build": "tsc",
     "prepare": "npm run build",
     "test": "jest",
     "format": "prettier --write 'src/**/*.{ts,js,tsx,jsx}'",
@@ -20,7 +20,7 @@
     "react": ">=16"
   },
   "devDependencies": {
-    "@homebound/tsconfig": "^1.0.1",
+    "@homebound/tsconfig": "^1.0.2",
     "@types/react": "^16.14.5",
     "@types/jest": "^26.0.21",
     "conventional-changelog-conventionalcommits": "^4.5.0",
