@@ -1,5 +1,5 @@
 {
-  "name": "@homebound/rtl-utils",
+  "name": "@homebound/rtl-apollo-utils",
   "main": "./dist/index.js",
   "types": "./dist/lib",
   "scripts": {
@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@homebound/tsconfig": "^1.0.1",
-    "@tsconfig/recommended": "^1.0.1",
     "@types/react": "^16.14.5",
     "@types/jest": "^26.0.21",
     "conventional-changelog-conventionalcommits": "^4.5.0",
