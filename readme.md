@@ -13,3 +13,6 @@ const apollo = withApollo([
 ]);
 const c = await render(<GraphQLPage {...props} />, apollo);
 ```
+
+
+
