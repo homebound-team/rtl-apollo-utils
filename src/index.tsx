@@ -2,7 +2,6 @@ import { MockedProvider, MockedResponse } from "@homebound/better-apollo-mocked-
 import React, { ReactElement } from "react";
 import { DefaultOptions, InMemoryCache, InMemoryCacheConfig } from "@apollo/client";
 
-/** Interface for adding wrappers (i.e. store, theme, etc. providers) around the test component. */
 interface Wrapper {
   wrap(c: ReactElement): ReactElement;
 }
