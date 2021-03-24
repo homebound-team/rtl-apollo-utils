@@ -1,12 +1,11 @@
 {
   "name": "@homebound/rtl-utils",
-  "version": "1.0.0-bump",
-  "main": "./build/lib/index.js",
-  "types": "./build/lib",
+  "main": "./dist/index.js",
+  "types": "./dist/lib",
   "scripts": {
     "build": "rm -rf build; ./node_modules/.bin/tsc",
     "prepare": "npm run build",
-    "test": "./node_modules/.bin/jest --watch",
+    "test": "jest",
     "format": "prettier --write 'src/**/*.{ts,js,tsx,jsx}'"
   },
   "dependencies": {
