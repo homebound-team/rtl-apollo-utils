@@ -1,15 +1,5 @@
 version: 2.1
 
-only-run-on-branches: &only-run-on-branches
-  branches:
-    ignore:
-      - main
-
-only-run-on-main: &only-run-on-main
-  branches:
-    only:
-      - main
-
 node-image: &node-image
   image: circleci/node:14.8.0
   auth:
@@ -21,15 +11,9 @@ workflows:
   workflow:
     jobs:
       - build:
-          context: npm
-      - publish:
-          requires:
-            - build
           context:
             - npm
             - github
-          filters:
-            <<: *only-run-on-main
 
 jobs:
   build:
@@ -38,16 +22,11 @@ jobs:
     steps:
       - checkout
       - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc'
-      - run: npm install
+      - run: npm ci
       - run: npm run build
       - run: npm test
-
-  publish:
-    docker:
-      - <<: *node-image
-    steps:
-      - checkout
-      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc'
-      - run: npm install
-      - run: npm run build
-      - run: npm run semantic-release
+      - when:
+          condition:
+            equal: [main, <<pipeline.git.branch>>]
+          steps:
+            - run: npm run semantic-release
