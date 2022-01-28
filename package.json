@@ -11,12 +11,13 @@
     "prepare": "npm run build",
     "test": "jest",
     "format": "prettier --write 'src/**/*.{ts,js,tsx,jsx}'",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "watch-rtl-utils": "npx copy-and-watch --watch ../rtl-utils/build/ ./node_modules/@homebound/rtl-utils/build/"
   },
   "dependencies": {
     "@apollo/client": "^3.1.3",
-    "@homebound/better-apollo-mocked-provider": "^1.8.0",
-    "@homebound/mrm-tasks-prettier": "^0.2.0"
+    "@homebound/rtl-utils": "^2.57.0",
+    "@homebound/better-apollo-mocked-provider": "^1.8.0"
   },
   "peerDependencies": {
     "react": ">=16"
