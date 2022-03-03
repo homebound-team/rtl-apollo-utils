@@ -1,7 +1,10 @@
 version: 2.1
 
+orbs:
+  node: circleci/node@5.0.0
+
 node-image: &node-image
-  image: circleci/node:14.8.0
+  image: cimg/node:16.4.0
   auth:
     username: $DOCKERHUB_USERNAME
     password: $DOCKERHUB_ACCESS_TOKEN
@@ -12,8 +15,19 @@ workflows:
     jobs:
       - build:
           context:
-            - npm
+            - npm-readonly
+            - dockerhub
+      - publish:
+          context:
+            - npm-publish
+            - dockerhub
             - github
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
 
 jobs:
   build:
@@ -21,12 +35,16 @@ jobs:
       - <<: *node-image
     steps:
       - checkout
-      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc'
-      - run: npm ci
+      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc'
+      - node/install-packages
       - run: npm run build
       - run: npm test
-      - when:
-          condition:
-            equal: [main, <<pipeline.git.branch>>]
-          steps:
-            - run: npm run semantic-release
+
+  publish:
+    docker:
+      - <<: *node-image
+    steps:
+      - checkout
+      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc'
+      - node/install-packages
+      - run: npm run semantic-release
