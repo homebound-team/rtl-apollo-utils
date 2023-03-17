@@ -20,9 +20,11 @@
     "@homebound/rtl-utils": ">=2",
     "react": ">=16"
   },
+  "dependencies": {
+    "@homebound/better-apollo-mocked-provider": "^1.12.0"
+  },
   "devDependencies": {
     "@apollo/client": "^3.7.10",
-    "@homebound/better-apollo-mocked-provider": "^1.12.0",
     "@homebound/rtl-utils": "^2.63.0",
     "@homebound/tsconfig": "^1.0.3",
     "@semantic-release/exec": "^6.0.3",
