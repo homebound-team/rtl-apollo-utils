@@ -1,10 +1,10 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.0.2
+  node: circleci/node@5.1.0
 
 node-image: &node-image
-  image: cimg/node:18.13.0
+  image: cimg/node:18.18.0
   auth:
     username: $DOCKERHUB_USERNAME
     password: $DOCKERHUB_ACCESS_TOKEN
