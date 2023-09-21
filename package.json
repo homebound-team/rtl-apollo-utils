@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "yarn build",
+    "prepack": "yarn build",
     "test": "jest",
     "format": "prettier --write 'src/**/*.{ts,js,tsx,jsx}'",
     "semantic-release": "semantic-release",
