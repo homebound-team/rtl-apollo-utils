@@ -1,11 +1,19 @@
-import { MockedProvider, MockedResponse, MockLink } from "@homebound/better-apollo-mocked-provider";
-import React, { ReactElement } from "react";
-import { DefaultOptions, FetchResult, InMemoryCache, InMemoryCacheConfig, Operation } from "@apollo/client";
+import {
+  ApolloClient,
+  DefaultOptions,
+  FetchResult,
+  InMemoryCache,
+  InMemoryCacheConfig,
+  Operation,
+  useApolloClient,
+} from "@apollo/client";
 import { Observable } from "@apollo/client/utilities";
+import { MockedProvider, MockedResponse, MockLink } from "@homebound/better-apollo-mocked-provider";
 import { addToWaitQueue } from "@homebound/rtl-utils";
+import React from "react";
 
 interface Wrapper {
-  wrap(c: ReactElement): ReactElement;
+  wrap(c: React.ReactElement): React.ReactElement;
 }
 
 let cacheConfig: InMemoryCacheConfig = {};
@@ -22,10 +30,11 @@ export function configureMockApollo(options: { defaultOptions?: DefaultOptions; 
 }
 
 /** Returns an Apollo provider that will respond with the `mocks` responses. */
-export function withApollo(...mocks: MockedResponse[]): Wrapper {
+export function withApollo(...mocks: MockedResponse[]): Wrapper & { client: ApolloClient<unknown> } {
   const link = new RtlMockLink(mocks, true);
+  let client: ApolloClient<unknown>;
   return {
-    wrap: (c) => (
+    wrap: (children) => (
       <MockedProvider
         // Provide empty resolvers object so that @client directives are stripped from queries
         // https://github.com/apollographql/apollo-client/pull/4499
@@ -35,10 +44,22 @@ export function withApollo(...mocks: MockedResponse[]): Wrapper {
         defaultOptions={defaultOptions}
         link={link}
       >
-        {c}
+        {/* Would be nice to have a `MockedProvider.setClient` but for now do a local hack. */}
+        <CaptureClient setClient={(c) => (client = c)}>{children}</CaptureClient>
       </MockedProvider>
     ),
+
+    // Expose the client
+    get client(): ApolloClient<unknown> {
+      return client;
+    },
   };
+}
+
+function CaptureClient(props: { setClient: (client: ApolloClient<any>) => void; children: React.ReactElement }) {
+  const client = useApolloClient();
+  props.setClient(client);
+  return props.children;
 }
 
 /** Subclass the MockLink so we can hook up `request` to the `rtl-utils` wait queue. */
