@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@5.1.0
 
 node-image: &node-image
-  image: cimg/node:20.9.0
+  image: cimg/node:24.21
   auth:
     username: $DOCKERHUB_USERNAME
     password: $DOCKERHUB_ACCESS_TOKEN
@@ -19,7 +19,8 @@ workflows:
             - dockerhub
       - publish:
           context:
-            - npm-publish
+            - npm-trusted-publish
+            - npm-readonly
             - dockerhub
             - github
           requires:
@@ -52,5 +53,15 @@ jobs:
     docker:
       - <<: *node-image
     steps:
-      - bootstrap
-      - run: yarn semantic-release
+      - checkout
+      # Private @homebound deps install via the project .yarnrc.yml `npmAuthToken: ${NPM_TOKEN}`
+      # (npm-readonly). Publishing uses OIDC via the npm CLI, which ignores Yarn's token.
+      - node/install-packages:
+          pkg-manager: yarn-berry
+          with-cache: true
+          include-branch-in-cache-key: false
+      - run:
+          name: Release
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud":"npm:registry.npmjs.org"}')
+            yarn semantic-release
